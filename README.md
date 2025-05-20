@@ -36,4 +36,15 @@ python main.py ou python3 main.py
 ### 4. Resultados
 A aplicação criará uma pasta chamada invoices contendo o csv e as faturas baixadas
 
+---
 
+# ✍️ Observações Finais
+As abordagens foram escolhidas buscando:
+
+Organização clara
+
+Separação de responsabilidades
+
+Eficiência com async
+
+Facilidade de eventuais manutenções
