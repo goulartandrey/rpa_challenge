@@ -1,6 +1,7 @@
+import asyncio
+from datetime import datetime
 import os
 import time
-import asyncio
 from typing import List
 
 import pandas as pd
@@ -55,7 +56,7 @@ def scrape(url: str) -> List[InvoiceSchema]:
                 try:
                     invoice = InvoiceSchema(
                         id=cells[1].text.strip(),
-                        vencimento=cells[2].text.strip(),
+                        due_date=cells[2].text.strip(),
                         url=cells[3].find_element(
                             By.TAG_NAME, "a").get_attribute("href").strip()
                     )
@@ -80,6 +81,21 @@ def scrape(url: str) -> List[InvoiceSchema]:
     return invoices
 
 
+def filter_invoices_by_due_date(data: List[InvoiceSchema]) -> List[InvoiceSchema]:
+    today = datetime.today()
+    due_invoices = []
+    for invoice in data:
+        try:
+            due_date = datetime.strptime(
+                invoice.due_date, "%d-%m-%Y")
+            if due_date <= today:
+                due_invoices.append(invoice)
+        except ValueError:
+            print(
+                f"Invalid date {invoice.id}: {invoice.due_date}")
+    return due_invoices
+
+
 async def download_invoice(session, invoice: InvoiceSchema) -> None:
     """Download a single invoice."""
     try:
@@ -94,15 +110,18 @@ async def download_invoice(session, invoice: InvoiceSchema) -> None:
 
 async def download_all_invoices(data: List[InvoiceSchema]) -> None:
     """Download all invoices."""
+    filtered_data = filter_invoices_by_due_date(data)
     os.makedirs(INVOICES_DIR, exist_ok=True)
     async with aiohttp.ClientSession() as session:
-        tasks = [download_invoice(session, invoice) for invoice in data]
+        tasks = [download_invoice(session, invoice)
+                 for invoice in filtered_data]
         await asyncio.gather(*tasks)
 
 
 def export_csv(data: List[InvoiceSchema]) -> None:
     """Export data to CSV."""
-    dict_list = [invoice.model_dump() for invoice in data]
+    filtered_data = filter_invoices_by_due_date(data)
+    dict_list = [invoice.model_dump() for invoice in filtered_data]
     df = pd.DataFrame(dict_list)
     csv_path = os.path.join(INVOICES_DIR, "invoices.csv")
     print(csv_path)
@@ -111,6 +130,7 @@ def export_csv(data: List[InvoiceSchema]) -> None:
 
 def main():
     """Main function to run the routine."""
+    # start_time = time.time() # Remove comment to check time of execution
     invoices = scrape(URL)
     if invoices:
         asyncio.run(download_all_invoices(invoices))
@@ -118,6 +138,7 @@ def main():
         print("Successfully downloaded.")
     else:
         print("No invoice found.")
+    # print(f"Tempo de execução: {time.time() - start_time:.2f} segundos")  # Remove comment to check time of execution
 
 
 if __name__ == "__main__":
