@@ -1,6 +1,6 @@
 # 🧾 RPA Challenge - Extração de Faturas
 
-Este projeto é parte de um teste técnico para a vaga de Desenvolvedor RPA Júnior. O objetivo é automatizar o processo de **extração de faturas** (imagens) a partir de uma página web, armazenando os arquivos localmente e consolidando os dados em um arquivo `.csv`.
+Fluxo para automatizar o processo de **extração de faturas** (imagens) a partir de uma página web, armazenando os arquivos localmente e consolidando os dados em um arquivo `.csv`.
 
 ---
 
