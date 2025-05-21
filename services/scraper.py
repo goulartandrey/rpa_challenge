@@ -7,8 +7,6 @@ from typing import List
 
 from schema.invoice import InvoiceSchema
 
-CHROME_DRIVER_PATH = "./chromedriver"
-
 
 def scrape(url: str) -> List[InvoiceSchema]:
     """Scrape URL data."""
@@ -19,8 +17,7 @@ def scrape(url: str) -> List[InvoiceSchema]:
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(service=Service(
-        CHROME_DRIVER_PATH), options=options)
+    driver = webdriver.Chrome(options=options)
     wait = WebDriverWait(driver, 5)
 
     invoices: List[InvoiceSchema] = []
