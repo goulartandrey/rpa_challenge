@@ -30,13 +30,10 @@ Fluxo para automatizar o processo de **extração de faturas** (imagens) a parti
 ### 2. Instale as dependencias
 pip install -r requirements.txt
 
-### 3. Instale as dependencias
-Atualie a variavel `CHROME_DRIVER_PATH` no arquivo `services/scraper.py` com o exectuavel do chromedriver da sua máquina. (Necessário para a lib selenium realizar o scraping)
-
-### 4. Execute a aplicação
+### 3. Execute a aplicação
 python main.py ou python3 main.py
 
-### 5. Resultados
+### 4. Resultados
 A aplicação criará uma pasta chamada invoices contendo o csv e as faturas baixadas
 
 ---
